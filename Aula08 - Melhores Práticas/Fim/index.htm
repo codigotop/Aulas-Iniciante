@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html ng-app="Curso">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>{{ titulo }}</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+	<script src="js/angular.min.js" type="text/javascript"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		angular.module('Curso',[]).run(function($rootScope) {
+			$rootScope.titulo = 'Aula 8';
+			$rootScope.nome = 'Roger';
+		})
+
+		.controller('PainelController', function($rootScope, $http){
+			var ctrl = this;
+			ctrl.titulo = 'Painel';
+			
+
+			ctrl.mudarTitulo = function(sNome)
+			{
+				if (sNome)
+				{
+					ctrl.titulo = sNome;
+				}
+				else
+				{
+					ctrl.titulo = Math.round(Math.random() * 10000,0);
+				}
+				ctrl.nome = ctrl.titulo;
+			}
+		})
+		.controller('ListaController', function($rootScope, $http){
+			var ctrl = this;
+			ctrl.titulo = 'Lista';
+
+			ctrl.listaNome = ['Roger','Eduardo','João'];
+		});
+
+	</script>
+	<style type="text/css" media="screen">
+		.vermelho { color:red; }
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="jumbotron">
+			<h1>{{ titulo }} - {{ nome }}</h1>
+			
+		</div>
+		
+
+		<div class="panel panel-default" ng-controller="PainelController as pc1">
+			<div class="panel-heading">{{ pc1.titulo }}</div>
+			<div class="panel-body">
+				
+				<button class="btn btn-primary" ng-click="pc1.mudarTitulo();">Novo Titulo</button>
+
+
+					<div class="panel panel-default" ng-controller="PainelController as pc2">
+						<div class="panel-heading">{{ pc1.titulo }}</div>
+						<div class="panel-body">
+							<button class="btn btn-primary" ng-click="pc2.mudarTitulo();">Novo Titulo</button>
+							{{ pc2.nome }}
+						</div>
+					</div>
+
+
+
+					<div class="panel panel-default" ng-controller="ListaController as lc1">
+						<div class="panel-heading">{{ lc1.titulo }}</div>
+						<div class="panel-body">
+							<ul>
+								<li ng-repeat="nome in lc1.listaNome" ng-click="lc1.mudarTitulo(nome);">{{ nome }}</li>
+							</ul>
+						</div>
+					</div>
+			</div>
+		</div>
+
+		<div class="panel panel-default" ng-controller="PainelController as pc3">
+			<div class="panel-heading">{{ pc3.titulo }}</div>
+			<div class="panel-body">
+				<button class="btn btn-primary" ng-click="pc3.mudarTitulo();">Novo Titulo</button>
+			</div>
+		</div>
+
+
+
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html ng-app="Aula5">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Aula 11 - JQuery + AngularJS</title>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <style>
+    	ul { margin: 0px; padding: 0px; }
+    	ul li { list-style: none; }
+    </style>
+    <script type="text/javascript">
+    	var controllerPrincipal = null;
+    	$(document).ready(function(){
+    		$('#btAlterarNome').on('click', function(){
+    			controllerPrincipal.listaPessoas[0].nome = 'Eduardo';
+    			controllerPrincipal.$apply();
+    		})
+
+    	})
+
+    	function alterarPais() {
+    		controllerPrincipal.listaPessoas[0].pais = 'Austrália';
+			controllerPrincipal.$apply();
+    	}
+
+    	function excluirPessoaFadeOut(oElemento) {
+    		var nome = $(oElemento).data('nome');
+			controllerPrincipal.excluirPessoa(nome);
+
+			$(oElemento).closest('li').fadeOut(500, function(){
+				controllerPrincipal.$apply();
+			});
+    	}
+    </script>
+</head>
+<body ng-controller="MeuQuartoController">
+	<div class="container">
+		<div class="jumbotron">
+			<h1>Aula 11 - JQuery + AngularJS</h1>
+			<p>...</p>
+			<p>
+				<a class="btn btn-primary btn-lg" ng-hide="exibirFormularioInclusao" ng-click="exibirFormularioInclusao = true;" href="#" role="button">Incluir Pessoa</a>
+				<a class="btn btn-primary btn-lg" id="btAlterarNome">Alterar Nome</a>
+				<a class="btn btn-primary btn-lg" onclick="alterarPais();">Alterar País</a>
+			</p>
+		</div>
+		<div class="panel panel-default" ng-show="exibirFormularioInclusao">
+			<div class="panel-heading">Inclusão de Pessoa</div>
+			<div class="panel-body">
+				<div class="form-group">
+					<label>Nome</label>
+					<input class="form-control" type="text" ng-model="frmInclusao.nome"/>
+				</div>
+				<div class="form-group">
+					<label>Idade</label>
+					<input class="form-control" type="text" ng-model="frmInclusao.idade"/>
+				</div>
+				<div class="form-group">
+					<label>País</label>
+					<input class="form-control" type="text" ng-model="frmInclusao.pais"/>
+				</div>
+				<div class="form-group">
+					<button class="btn btn-default" ng-click="incluirPessoa();">Incluir</button>				
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">{{ nomeListaPessoas }}</div>
+			<div class="panel-body">
+				<ul>
+					<li ng-repeat="pessoa in listaPessoas">
+
+						<div class="panel panel-default">
+							<div class="panel-heading">{{ pessoa.nome }}</div>
+							<div class="panel-body">
+								<ul>
+									<li>Idade: {{ pessoa.idade }}</li>
+									<li>País: {{ pessoa.pais }}</li>
+								</ul>
+								<button class="btn btn-default" data-nome="{{ pessoa.nome }}" onclick="excluirPessoaFadeOut(this);">Excluir</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		angular.module('Aula5',[])
+		.controller('MeuQuartoController', function($scope){
+			controllerPrincipal = $scope;
+			$scope.frmInclusao = { 
+									"nome": "",
+									"idade": "",
+									"pais": ""
+								 };
+
+
+			$scope.nomeListaPessoas = 'Lista de pessoas';
+
+			$scope.listaPessoas = [];
+
+			$scope.pessoa1 = { 
+								"nome": "Roger",
+								"idade": 34,
+								"pais": "Brasil"
+							 };
+
+			$scope.pessoa2 = { 
+								"nome": "João",
+								"idade": 23,
+								"pais": "Brasil"
+							 };
+
+			$scope.listaPessoas.push($scope.pessoa1);
+			$scope.listaPessoas.push($scope.pessoa2);
+
+			$scope.exibirFormularioInclusao = false;
+
+
+			$scope.incluirPessoa = function() {
+
+
+				$scope.listaPessoas.push({ 
+											nome: $scope.frmInclusao.nome, 
+											idade: $scope.frmInclusao.idade, 
+											pais: $scope.frmInclusao.pais
+										});
+
+
+				$scope.frmInclusao = { 
+									"nome": "",
+									"idade": "",
+									"pais": ""
+								 };
+
+				$scope.exibirFormularioInclusao = false;
+			}
+
+
+			$scope.excluirPessoa = function(sNome) {
+				
+				var listaPessoasNova = $scope.listaPessoas.filter(
+											function(pessoa){ 
+												return pessoa.nome != sNome;
+											});
+
+				$scope.listaPessoas = listaPessoasNova;
+			}
+		});
+	</script>
+</body>
+</html>

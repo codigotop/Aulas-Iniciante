@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html ng-app="Curso">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>{{ titulo }}</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+	<script src="js/angular.min.js" type="text/javascript"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		angular.module('Curso',[])
+		.controller('MeuController', function($rootScope, $scope, $http){
+			$rootScope.titulo = 'Aula 6 Extra';
+
+			$scope.termoBusca = 'Brasil';
+			$scope.nomeLista = 'Lista de buscas';
+
+			$scope.listaBuscas = [];
+
+			
+
+			$scope.carregarBusca = function() {
+				$http.jsonp('https://pt.wikipedia.org/w/api.php?action=query&prop=pageimages%7Cextracts&format=json&piprop=thumbnail%7Cname%7Coriginal&exintro=&explaintext=&redirects=yes&callback=JSON_CALLBACK&titles=' + $scope.termoBusca)
+				.then(function(resposta){
+
+					var pages = resposta.data.query.pages;
+					var nomePropriedade = Object.keys(pages)[0];
+
+					$scope.listaBuscas.push(pages[nomePropriedade]);
+					//console.log(pages[nomePropriedade]);
+					///pages["404"]
+					//Object.keys(pages)[0]
+					//console.log(resposta);
+				})
+			}
+		});
+
+	</script>
+</head>
+<body ng-controller="MeuController">
+	<div class="container">
+		<div class="jumbotron">
+			<h1>{{ titulo }}</h1>
+			<div class="row">
+			  <div class="col-lg-6">
+			    <div class="input-group">
+			      <input type="text" class="form-control" ng-model="termoBusca" placeholder="Buscar por...">
+			      <span class="input-group-btn">
+			        <button class="btn btn-default" type="button" ng-click="carregarBusca();">Buscar!</button>
+			      </span>
+			    </div>
+			  </div>
+			</div>
+		</div>
+		
+
+		<div class="panel panel-default">
+			<div class="panel-heading">{{ nomeLista }}</div>
+			<div class="panel-body">
+				<ul>
+					<li ng-repeat="busca in listaBuscas">
+
+						<div class="panel panel-default">
+							<div class="panel-heading">{{ busca.title }}</div>
+							<div class="panel-body">
+								<div ng-show="busca.thumbnail">
+									<img ng-src="{{ busca.thumbnail.source }}" />
+								</div>
+								<div>{{ busca.extract.substring(0, 200) }}</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
